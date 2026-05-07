@@ -20,23 +20,10 @@ export async function POST({ request }) {
         
         const prompt = `Generate a professional product photography image of a ${bottleSize || '200ml square'} plastic water bottle with a custom label for brand "${brandName}". The bottle should have a clean, premium look with a white/transparent body. The label design should be ${vibe || 'clean, minimalist, premium'}. Show the bottle on a clean white or light gray background with soft studio lighting. High quality, photorealistic, commercial product shot.`;
 
-        let result;
-        let model;
-        let modelUsed = 'gemini-2.5-flash-image';
-        
-        try {
-            model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
-            result = await model.generateContent({
-                contents: [{ parts: [{ text: prompt }] }]
-            });
-        } catch (e) {
-            console.warn('Nano Banana (gemini-2.5-flash-image) failed, falling back to Nano Banana 2:', e.message);
-            modelUsed = 'gemini-3.1-flash-image-preview';
-            model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-image-preview' });
-            result = await model.generateContent({
-                contents: [{ parts: [{ text: prompt }] }]
-            });
-        }
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
+        const result = await model.generateContent({
+            contents: [{ parts: [{ text: prompt }] }]
+        });
 
         const response = result.response;
         
@@ -45,7 +32,7 @@ export async function POST({ request }) {
             return json({
                 success: true,
                 image: `data:image/png;base64,${base64}`,
-                model: modelUsed,
+                model: 'gemini-2.5-flash-image',
                 design: {
                     id: `design_${Date.now()}`,
                     brandName,
@@ -55,10 +42,9 @@ export async function POST({ request }) {
                 }
             });
         } else {
-            // If no image is returned (sometimes happens if safety filters trigger or model choice)
             return json({ 
                 success: true,
-                model: modelUsed,
+                model: 'gemini-2.5-flash-image',
                 design: {
                     id: `design_${Date.now()}`,
                     brandName,
@@ -66,12 +52,16 @@ export async function POST({ request }) {
                     bottleSize,
                     createdAt: new Date().toISOString()
                 },
-                message: 'Design logic processed, but no visual generated. Using fallback preview.'
+                message: 'Design logic processed, but no visual generated.'
             });
         }
 
     } catch (error) {
-        console.error('Gemini API error:', error);
-        return json({ error: 'Failed to generate design: ' + error.message }, { status: 500 });
+        const ref = Math.random().toString(36).substr(2, 8).toUpperCase();
+        console.error(`[API Error ${ref}]`, error.message);
+        if (error.message?.includes('429') || error.message?.includes('quota') || error.message?.includes('rate_limit')) {
+            return json({ error: `Daily generation quota exhausted (${ref}). Try again later or upgrade your plan.` }, { status: 429 });
+        }
+        return json({ error: `Generation failed (${ref})` }, { status: 500 });
     }
 }

@@ -63,6 +63,13 @@
                 return;
             }
 
+            if (!response.ok) {
+                const ref = Math.random().toString(36).substr(2, 6).toUpperCase();
+                console.error(`[Studio Error ${ref}]`, response.status, result);
+                error = result?.error || `Server error (${ref})`;
+                return;
+            }
+
             if (result.success) {
                 generatedImage = result.image || null;
                 modelUsed = result.model || 'AI ENGINE';

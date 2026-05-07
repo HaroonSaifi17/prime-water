@@ -34,7 +34,22 @@
                 body: JSON.stringify({ brandName, vibe, bottleSize, material })
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                const ref = Math.random().toString(36).substr(2, 6).toUpperCase();
+                console.error(`[Customize Error ${ref}]`, 'Invalid JSON', response.status, response.statusText);
+                error = `Server error (${ref})`;
+                return;
+            }
+
+            if (!response.ok) {
+                const ref = Math.random().toString(36).substr(2, 6).toUpperCase();
+                console.error(`[Customize Error ${ref}]`, response.status, data);
+                error = data?.error || `Server error (${ref})`;
+                return;
+            }
 
             if (data.success) {
                 generatedImage = data.image || '';
