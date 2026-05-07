@@ -4,7 +4,7 @@
 
 <div class="min-h-screen bg-[#0B132B] text-white pt-24 px-4 pb-12 font-sans">
     <div class="max-w-4xl mx-auto">
-        <button on:click={() => goto('/customize')} class="text-blue-400 hover:text-cyan-400 mb-8 flex items-center gap-2 text-sm font-medium transition-colors">
+        <button onclick={() => goto('/customize')} class="text-blue-400 hover:text-cyan-400 mb-8 flex items-center gap-2 text-sm font-medium transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Back to Design
         </button>

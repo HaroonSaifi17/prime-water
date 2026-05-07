@@ -13,7 +13,7 @@
         
         <div use:reveal={{delay: 200, duration: 1000}}>
             <p class="text-xl md:text-2xl text-neutral-500 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-                Stop serving generic water at your events. Use our AI studio to design your own custom branded FSSAI-approved water bottles in exactly 4 seconds.
+                Stop serving generic water at your events. Use our AI studio to design your own custom branded FSSAI-approved 200ml square plastic water bottles in exactly 4 seconds.
             </p>
         </div>
 

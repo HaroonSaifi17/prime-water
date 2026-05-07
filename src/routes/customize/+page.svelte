@@ -1,7 +1,7 @@
 <script>
     import { goto } from '$app/navigation';
-    let isGenerating = false;
-    let generated = false;
+    let isGenerating = $state(false);
+    let generated = $state(false);
     
     function generateLabel() {
         isGenerating = true;
@@ -48,10 +48,21 @@
                         <option>Eco & Organic</option>
                     </select>
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-blue-200 mb-2">Bottle Size</label>
+                    <select class="w-full bg-[#0B132B] border border-blue-500/30 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
+                        <option>200ml Square (Best Seller)</option>
+                        <option>250ml Round</option>
+                        <option>500ml Standard</option>
+                        <option>750ml Premium</option>
+                        <option>1L Family</option>
+                    </select>
+                </div>
             </div>
             
             <button 
-                on:click={generateLabel}
+                onclick={generateLabel}
                 disabled={isGenerating}
                 class="w-full mt-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed">
                 {isGenerating ? 'AI is Generating...' : 'Generate Label Design'}
@@ -75,23 +86,25 @@
                 </div>
             {:else}
                 <div class="text-center animate-in fade-in zoom-in duration-500 p-8 w-full">
-                    <!-- Fake Bottle Mockup -->
-                    <div class="relative w-48 h-96 mx-auto mb-8 bg-gradient-to-b from-blue-100 to-blue-300 rounded-t-3xl rounded-b-xl shadow-2xl overflow-hidden shadow-cyan-500/20">
+                    <!-- Fake Bottle Mockup (Square) -->
+                    <div class="relative w-40 h-80 mx-auto mb-8 bg-gradient-to-b from-blue-100 to-blue-200 rounded-sm shadow-2xl overflow-hidden shadow-cyan-500/20 perspective-1000 transform-style-3d border border-white/40">
                         <!-- Cap -->
-                        <div class="absolute top-0 w-full h-8 bg-blue-900 border-b border-blue-800"></div>
+                        <div class="absolute -top-1 left-1/2 -translate-x-1/2 w-10 h-6 bg-blue-900 border-b border-blue-800 rounded-sm z-20"></div>
                         <!-- Label -->
-                        <div class="absolute top-1/4 w-full h-40 bg-[#0B132B] border-y border-cyan-500/30 flex items-center justify-center flex-col">
+                        <div class="absolute top-[30%] w-full h-32 bg-[#0B132B] border-y border-cyan-500/30 flex items-center justify-center flex-col z-10">
                             <span class="text-xs text-blue-300 tracking-widest uppercase mb-1">Acme Corp</span>
                             <span class="text-lg font-bold text-white tracking-widest">PRIME</span>
                             <span class="text-xs text-cyan-400 mt-2">Premium Water</span>
                         </div>
-                        <!-- Reflections -->
-                        <div class="absolute inset-0 bg-gradient-to-r from-white/40 via-transparent to-black/20 mix-blend-overlay"></div>
+                        <!-- Reflections for Square Edge -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-black/10 mix-blend-overlay w-full z-10 pointer-events-none"></div>
+                        <div class="absolute left-4 top-0 bottom-0 w-1 bg-white/40 z-10 pointer-events-none"></div>
+                        <div class="absolute right-4 top-0 bottom-0 w-1 bg-white/20 z-10 pointer-events-none"></div>
                     </div>
                     <h3 class="text-2xl font-bold text-white mb-2">Generation Complete</h3>
                     <p class="text-blue-200/70 mb-8">Ready for production. Review the label above.</p>
                     <button 
-                        on:click={() => goto('/order')}
+                        onclick={() => goto('/order')}
                         class="px-8 py-3 bg-white text-[#0B132B] font-bold rounded-full hover:scale-105 transition-transform shadow-xl">
                         Proceed to Order
                     </button>
