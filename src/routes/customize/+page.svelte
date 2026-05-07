@@ -45,8 +45,9 @@
                 error = data.error || 'Failed to generate design. Quota might be hit.';
             }
         } catch (e) {
-            error = 'A network error occurred. Please try again.';
-            console.error(e);
+            const ref = Math.random().toString(36).substr(2, 6).toUpperCase();
+            console.error(`[Customize Error ${ref}]`, e);
+            error = `Request failed (${ref})`;
         } finally {
             isGenerating = false;
         }
@@ -72,13 +73,12 @@
 
             const data = await response.json();
             if (data.success) {
-                alert('Design saved to your profile!');
+                console.log('[Customize] Design saved successfully');
             } else {
-                alert('Failed to save design.');
+                console.error('[Customize] Save failed:', data.error || 'Unknown error');
             }
         } catch (e) {
-            console.error(e);
-            alert('Error saving design.');
+            console.error('[Customize] Error saving design:', e);
         } finally {
             isSaving = false;
         }
@@ -86,7 +86,7 @@
 
     function downloadImage() {
         if (!generatedImage) {
-            alert('No image to download. Please generate one first.');
+            console.warn('[Customize] No image to download');
             return;
         }
         

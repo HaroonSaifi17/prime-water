@@ -53,18 +53,27 @@
                 })
             });
 
-            const result = await response.json();
+            let result;
+            try {
+                result = await response.json();
+            } catch {
+                const ref = Math.random().toString(36).substr(2, 6).toUpperCase();
+                console.error(`[Studio Error ${ref}]`, 'Invalid JSON response', response.status, response.statusText);
+                error = `Server error (${ref})`;
+                return;
+            }
 
             if (result.success) {
                 generatedImage = result.image || null;
                 modelUsed = result.model || 'AI ENGINE';
                 previewReady = true;
             } else {
-                error = result.error || 'Failed to generate design';
+                error = result.error || 'Generation failed';
             }
         } catch (err) {
-            error = 'Network error: ' + err.message;
-            console.error(err);
+            const ref = Math.random().toString(36).substr(2, 6).toUpperCase();
+            console.error(`[Studio Error ${ref}]`, err);
+            error = `Request failed (${ref})`;
         } finally {
             isGenerating = false;
         }
@@ -87,13 +96,12 @@
 
             const result = await response.json();
             if (result.success) {
-                alert('Design saved successfully to your collection!');
+                console.log('[Studio] Design saved successfully');
             } else {
-                alert('Error: ' + (result.error || 'Could not save design'));
+                console.error('[Studio] Save failed:', result.error || 'Unknown error');
             }
         } catch (err) {
-            console.error('Failed to save design:', err);
-            alert('Failed to save design. Please check your connection.');
+            console.error('[Studio] Failed to save design:', err);
         } finally {
             isSaving = false;
         }
@@ -117,7 +125,7 @@
 
     function downloadImage() {
         if (!generatedImage) {
-            alert('No image available to download. Please generate one first.');
+            console.warn('[Studio] No image available to download');
             return;
         }
         const link = document.createElement('a');
@@ -214,9 +222,7 @@
                     </div>
                     
                     {#if error}
-                        <div class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium" in:fly={{y: 10}}>
-                            {error}
-                        </div>
+                        <p class="text-red-500 text-xs font-medium text-center">{error}</p>
                     {/if}
                 </div>
 
