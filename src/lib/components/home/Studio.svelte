@@ -1,7 +1,7 @@
 <script>
     import { reveal } from '$lib/utils/animations.js';
 
-    let isGenerating = false;
+    let isGenerating = $state(false);
     
     // Form state
     let formData = {
@@ -88,9 +88,9 @@
 
                 <div class="mt-10">
                     <button 
-                        on:click={handleGenerate}
+                        onclick={handleGenerate}
                         disabled={isGenerating}
-                        class="w-full py-5 bg-black text-white font-bold rounded-2xl text-lg hover:bg-neutral-800 focus:ring-4 focus:ring-neutral-200 transition-all disabled:opacity-50 disabled:hover:bg-black flex justify-center items-center gap-3">
+                        class="w-full py-5 bg-black text-white font-bold rounded-2xl text-lg hover:bg-neutral-800 focus:ring-4 focus:ring-neutral-200 transition-all disabled:opacity-50 disabled:hover:bg-black flex justify-center items-center gap-3 shadow-xl shadow-black/20">
                         {#if isGenerating}
                             <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             <span>Synthesizing...</span>
@@ -115,7 +115,7 @@
                                 <div class="absolute inset-0 border-[3px] border-neutral-800 rounded-full"></div>
                                 <div class="absolute inset-0 border-[3px] border-white rounded-full border-t-transparent animate-spin duration-1000"></div>
                                 <div class="absolute inset-4 border-[3px] border-neutral-700 rounded-full"></div>
-                                <div class="absolute inset-4 border-[3px] border-neutral-400 rounded-full border-b-transparent animate-spin duration-700 reverse"></div>
+                                <div class="absolute inset-4 border-[3px] border-neutral-600 rounded-full border-b-transparent animate-spin duration-700 reverse"></div>
                             </div>
                             <div class="space-y-2">
                                 <p class="font-mono text-sm text-white uppercase tracking-widest animate-pulse">Running proprietary model...</p>

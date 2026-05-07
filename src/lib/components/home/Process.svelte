@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <h3 class="text-2xl font-bold text-neutral-900 tracking-tight mb-3">1. AI Synthesis</h3>
-                    <p class="text-neutral-500 font-medium leading-relaxed">Our proprietary Nano Banao model analyzes your logo and brand guidelines to instantly generate stunning, production-ready label wrap mockups.</p>
+                    <p class="text-neutral-500 font-medium leading-relaxed">Our proprietary AI model analyzes your logo and brand guidelines to instantly generate stunning, production-ready label wrap mockups.</p>
                 </div>
             </div>
 

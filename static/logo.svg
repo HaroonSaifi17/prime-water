@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" width="100%" height="100%">
+  <defs>
+    <!-- Change the accent color here -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400&amp;display=swap');
+      
+      .bg { fill: #041424; }
+      
+      /* Main Logo Colors */
+      .leaf-light { fill: #E3F0F4; }
+      .leaf-main { fill: #8CCBDC; }
+      
+      /* THIS IS YOUR ACCENT COLOR - you can change the hex code below */
+      .accent { fill: #00FFAA; } 
+      
+      .stem-vein { 
+        fill: none; 
+        stroke: #041424; 
+        stroke-width: 3.5; 
+        stroke-linecap: round; 
+      }
+      
+      .logo-text {
+        font-family: 'Oswald', 'Bebas Neue', 'Arial Narrow', sans-serif;
+        font-size: 92px;
+        fill: #8CCBDC;
+        letter-spacing: 2px;
+      }
+    </style>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="100%" height="100%" class="bg" />
+
+  <!-- Logo Mark (Leaf) -->
+  <g transform="translate(15, 10)">
+    <!-- Left Leaf -->
+    <path d="M 45,85 C 10,75 5,45 15,35 C 25,25 45,45 45,85 Z" class="leaf-light" />
+    
+    <!-- Right Leaf (Using Accent Color) -->
+    <!-- I applied the accent color class to this right leaf as requested -->
+    <path d="M 55,85 C 90,75 95,45 85,35 C 75,25 55,45 55,85 Z" class="accent" />
+    
+    <!-- Center Leaf Left Half -->
+    <path d="M 50,90 C 20,65 25,20 50,5 V 90 Z" class="leaf-light" />
+    
+    <!-- Center Leaf Right Half -->
+    <path d="M 50,90 C 80,65 75,20 50,5 V 90 Z" class="leaf-main" />
+    
+    <!-- Stem and Center Vein (Cutout effect using background color) -->
+    <path d="M 50,90 Q 45,100 40,110" class="stem-vein" stroke="#8CCBDC" />
+    <path d="M 50,5 V 88" class="stem-vein" />
+    
+    <!-- Lateral Veins -->
+    <path d="M 50,65 L 32,48" class="stem-vein" />
+    <path d="M 50,45 L 36,32" class="stem-vein" />
+    <path d="M 50,25 L 40,16" class="stem-vein" />
+    
+    <path d="M 50,70 L 68,52" class="stem-vein" />
+    <path d="M 50,50 L 62,38" class="stem-vein" />
+  </g>
+
+  <!-- Typography -->
+  <text x="115" y="98" class="logo-text">PRIME WATER</text>
+</svg>
