@@ -1,50 +1,75 @@
 import { json } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function POST({ request }) {
     try {
-        const { brandName, vibe, bottleSize, material } = await request.json();
+        const { brandName, vibe, bottleSize, material, logo } = await request.json();
 
-        if (!brandName || !bottleSize) {
-            return json({ error: 'Missing required fields' }, { status: 400 });
+        if (!brandName) {
+            return json({ error: 'Brand name is required' }, { status: 400 });
         }
 
-        // TODO: Integrate with Gemini API when key is provided
-        // Example Gemini prompt construction:
-        // const prompt = `Generate a stunning label design for a ${bottleSize} water bottle...
-        // Brand: ${brandName}
-        // Style/Vibe: ${vibe || 'clean, minimalist, premium'}
-        // Return as JSON with base64 image data...`;
+        const apiKey = env.GEMINI_API_KEY;
+        
+        if (!apiKey) {
+            return json({ error: 'Server API key not configured' }, { status: 500 });
+        }
 
-        // For now, return mock data with success status
-        // This can be replaced with actual Gemini API call later
+        const genAI = new GoogleGenerativeAI(apiKey);
+        
+        const prompt = `Generate a professional product photography image of a 200ml square plastic water bottle with a custom label for brand "${brandName}". The bottle should have a clean, premium look with a white/transparent body. The label design should be ${vibe || 'clean, minimalist, premium'}. Show the bottle on a clean white or light gray background with soft studio lighting. High quality, photorealistic, commercial product shot.`;
 
-        const designs = [
-            { style: 'modern', accentColor: '#0ea5e9' },
-            { style: 'luxury', accentColor: '#d4af37' },
-            { style: 'eco', accentColor: '#22c55e' }
-        ];
+        let result;
+        let model;
+        
+        // Try gemini-2.5-flash first (latest stable), fallback to 1.5-flash
+        try {
+            model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            result = await model.generateContent({
+                contents: [{ parts: [{ text: prompt }] }]
+            });
+        } catch (e) {
+            console.log('gemini-2.5-flash not available, trying gemini-1.5-flash');
+            model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+            result = await model.generateContent({
+                contents: [{ parts: [{ text: prompt }] }]
+            });
+        }
 
-        const randomDesign = designs[Math.floor(Math.random() * designs.length)];
-
-        return json({
-            success: true,
-            design: {
-                id: `design_${Date.now()}`,
-                brandName,
-                vibe,
-                bottleSize,
-                material,
-                style: randomDesign.style,
-                accentColor: randomDesign.accentColor,
-                createdAt: new Date().toISOString(),
-                // Placeholder for when we integrate real image generation
-                previewUrl: null
-            },
-            message: 'Design generated successfully. Use the preview to see your bottle.'
-        });
+        const response = result.response;
+        
+        if (response.candidates?.[0]?.content?.parts?.[0]?.inlineData) {
+            const base64 = response.candidates[0].content.parts[0].inlineData.data;
+            return json({
+                success: true,
+                image: `data:image/png;base64,${base64}`,
+                design: {
+                    id: `design_${Date.now()}`,
+                    brandName,
+                    vibe,
+                    bottleSize,
+                    material,
+                    createdAt: new Date().toISOString()
+                }
+            });
+        } else {
+            return json({ 
+                success: true,
+                design: {
+                    id: `design_${Date.now()}`,
+                    brandName,
+                    vibe,
+                    bottleSize,
+                    material,
+                    createdAt: new Date().toISOString()
+                },
+                message: 'Design generated but no image returned'
+            });
+        }
 
     } catch (error) {
-        console.error('Generate error:', error);
-        return json({ error: 'Failed to generate design' }, { status: 500 });
+        console.error('Gemini API error:', error);
+        return json({ error: 'Failed to generate design: ' + error.message }, { status: 500 });
     }
 }
