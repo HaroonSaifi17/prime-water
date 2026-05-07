@@ -18,20 +18,21 @@ export async function POST({ request }) {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         
-        const prompt = `Generate a professional product photography image of a 200ml square plastic water bottle with a custom label for brand "${brandName}". The bottle should have a clean, premium look with a white/transparent body. The label design should be ${vibe || 'clean, minimalist, premium'}. Show the bottle on a clean white or light gray background with soft studio lighting. High quality, photorealistic, commercial product shot.`;
+        const prompt = `Generate a professional product photography image of a ${bottleSize || '200ml square'} plastic water bottle with a custom label for brand "${brandName}". The bottle should have a clean, premium look with a white/transparent body. The label design should be ${vibe || 'clean, minimalist, premium'}. Show the bottle on a clean white or light gray background with soft studio lighting. High quality, photorealistic, commercial product shot.`;
 
         let result;
         let model;
+        let modelUsed = 'gemini-2.5-flash-image';
         
-        // Try gemini-2.5-flash first (latest stable), fallback to 1.5-flash
         try {
-            model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
             result = await model.generateContent({
                 contents: [{ parts: [{ text: prompt }] }]
             });
         } catch (e) {
-            console.log('gemini-2.5-flash not available, trying gemini-1.5-flash');
-            model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+            console.warn('Nano Banana (gemini-2.5-flash-image) failed, falling back to Nano Banana 2:', e.message);
+            modelUsed = 'gemini-3.1-flash-image-preview';
+            model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-image-preview' });
             result = await model.generateContent({
                 contents: [{ parts: [{ text: prompt }] }]
             });
@@ -44,27 +45,28 @@ export async function POST({ request }) {
             return json({
                 success: true,
                 image: `data:image/png;base64,${base64}`,
+                model: modelUsed,
                 design: {
                     id: `design_${Date.now()}`,
                     brandName,
                     vibe,
                     bottleSize,
-                    material,
                     createdAt: new Date().toISOString()
                 }
             });
         } else {
+            // If no image is returned (sometimes happens if safety filters trigger or model choice)
             return json({ 
                 success: true,
+                model: modelUsed,
                 design: {
                     id: `design_${Date.now()}`,
                     brandName,
                     vibe,
                     bottleSize,
-                    material,
                     createdAt: new Date().toISOString()
                 },
-                message: 'Design generated but no image returned'
+                message: 'Design logic processed, but no visual generated. Using fallback preview.'
             });
         }
 

@@ -2,7 +2,7 @@
     import { reveal } from '$lib/utils/animations.js';
 </script>
 
-<div class="pt-40 pb-32 px-6 min-h-screen bg-neutral-50 flex items-center">
+<div class="pt-40 pb-32 px-6 min-h-screen bg-neutral-50">
     <div class="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-16 lg:gap-24 items-start">
         
         <!-- Left Side: Copy & Info -->

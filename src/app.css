@@ -7,7 +7,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* removed scroll-behavior: smooth to fix navigation scroll issues */
 }
 
 /* Custom utilities for glassmorphism */
